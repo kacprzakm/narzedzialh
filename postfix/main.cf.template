@@ -1,0 +1,23 @@
+myhostname = POSTFIX_HOSTNAME_PLACEHOLDER
+mydomain = MAIL_DOMAIN_PLACEHOLDER
+myorigin = $mydomain
+inet_interfaces = all
+inet_protocols = all
+mydestination =
+virtual_mailbox_domains = MAIL_DOMAIN_PLACEHOLDER
+virtual_transport = mailtester
+smtpd_banner = $myhostname ESMTP
+biff = no
+append_dot_mydomain = no
+message_size_limit = 10240000
+mailbox_size_limit = 0
+smtpd_client_connection_count_limit = 10
+smtpd_client_message_rate_limit = 5
+maximal_queue_lifetime = 1h
+bounce_queue_lifetime = 1h
+mynetworks = 127.0.0.0/8 [::1]/128 172.16.0.0/12 10.0.0.0/8
+smtpd_recipient_restrictions =
+    permit_mynetworks,
+    reject_unauth_destination,
+    check_policy_service unix:private/recipient_policy,
+    reject

@@ -1,0 +1,3 @@
+hosts = redis:6379
+key_format = rcpt:%u
+result_format = OK

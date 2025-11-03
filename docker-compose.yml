@@ -1,0 +1,73 @@
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file: .env
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save ""
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - internal
+    restart: unless-stopped
+
+  postfix:
+    build:
+      context: .
+      dockerfile: postfix/Dockerfile
+    ports:
+      - "25:25"
+    env_file: .env
+    volumes:
+      - ./parser:/app/parser:ro
+    depends_on:
+      redis:
+        condition: service_healthy
+      rspamd:
+        condition: service_started
+    networks:
+      - internal
+    restart: unless-stopped
+
+  rspamd:
+    image: rspamd/rspamd:latest
+    volumes:
+      - ./rspamd/local.d:/etc/rspamd/local.d:ro
+      - rspamd_data:/var/lib/rspamd
+    healthcheck:
+      test: ["CMD", "rspamadm", "control", "stat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - internal
+    restart: unless-stopped
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  rspamd_data:
