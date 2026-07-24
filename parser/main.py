@@ -132,7 +132,10 @@ async def _check_rbl(ip: str) -> list[dict[str, Any]]:
         try:
             import dns.resolver
 
-            dns.resolver.resolve(f"{reversed_ip}.{host}", "A", lifetime=3)
+            ans = dns.resolver.resolve(f"{reversed_ip}.{host}", "A", lifetime=3)
+            for rdata in ans:
+                if str(rdata).startswith("127.255.255."):
+                    return None
             return True
         except Exception as e:
             import dns.resolver

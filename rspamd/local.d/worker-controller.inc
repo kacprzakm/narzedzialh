@@ -1,4 +1,2 @@
-# Rspamd worker-controller – HTTP API na porcie 11333
-# Wyłączamy hasło bo Rspamd jest w sieci wewnętrznej Docker (nie wystawiony na zewnątrz)
-# W produkcji z zewnętrznym dostępem DODAJ: password = "hasło"
 bind_socket = "*:11333";
+secure_ip = ["127.0.0.1", "::1", "172.16.0.0/12"];

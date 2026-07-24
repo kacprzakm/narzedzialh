@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.core.config import get_settings
+from api.core.security import SecurityMiddleware
 from api.routers import dns, jobs, ssl
 
 
@@ -41,9 +42,11 @@ def create_app() -> FastAPI:
     openapi_url=None,
     )
 
+    app.add_middleware(SecurityMiddleware)
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[settings.cors_origin],
+        allow_origins=settings.allowed_origins,
         allow_credentials=True,
         allow_methods=["GET", "POST"],
         allow_headers=["*"],
