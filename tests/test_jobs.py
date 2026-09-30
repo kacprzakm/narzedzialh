@@ -7,7 +7,6 @@ from httpx import ASGITransport, AsyncClient
 
 os.environ.setdefault("REDIS_URL", "redis://localhost:6379/0")
 os.environ.setdefault("MAIL_DOMAIN", "test.example.com")
-os.environ.setdefault("CORS_ORIGIN", "*")
 
 from api.main import app  # noqa: E402
 

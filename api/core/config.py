@@ -18,15 +18,9 @@ class Settings(BaseSettings):
 
     rspamd_url: str = "http://rspamd:11333"
 
-    cors_origin: str = "https://narzedzia.lh.pl"
-
     rate_limit_requests: int = 30
     rate_limit_window: int = 60
     trusted_proxy_hops: int = 1
-
-    @property
-    def allowed_origins(self) -> list[str]:
-        return [o.strip() for o in self.cors_origin.split(",") if o.strip()]
 
 
 @lru_cache

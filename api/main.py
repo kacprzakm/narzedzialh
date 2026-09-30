@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 
 import redis.asyncio as aioredis
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
 from api.core.config import get_settings
 from api.core.security import SecurityMiddleware
@@ -31,8 +30,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 def create_app() -> FastAPI:
-    settings = get_settings()
-
     app = FastAPI(
     title="narzedzia.lh.pl",
     version="0.1.0",
@@ -43,14 +40,6 @@ def create_app() -> FastAPI:
     )
 
     app.add_middleware(SecurityMiddleware)
-
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.allowed_origins,
-        allow_credentials=True,
-        allow_methods=["GET", "POST"],
-        allow_headers=["*"],
-    )
 
     app.include_router(jobs.router, prefix="/api/v1/jobs", tags=["mail-tester"])
     app.include_router(ssl.router, prefix="/api/v1/ssl", tags=["ssl-checker"])
